@@ -51,12 +51,12 @@ function filterByQuery(query, animalsArray) {
     return filteredResults;
   }
 
-  function findById(id, animalsArray) {
+function findById(id, animalsArray) {
     const result = animalsArray.filter(animal => animal.id === id)[0];
     return result;
   }
 
-  app.get('/api/animals', (req, res) => {
+app.get('/api/animals', (req, res) => {
     let results = animals;
     if (req.query) {
       results = filterByQuery(req.query, results);
@@ -64,7 +64,7 @@ function filterByQuery(query, animalsArray) {
     res.json(results);
   });
 
-  app.get('/api/animals/:id', (req, res) => {
+app.get('/api/animals/:id', (req, res) => {
     const result = findById(req.params.id, animals);
     if (result) {
       res.json(result);
@@ -73,7 +73,7 @@ function filterByQuery(query, animalsArray) {
     }
   });
 
-  function createNewAnimal(body, animalsArray) {
+function createNewAnimal(body, animalsArray) {
     const animal = body;
     animalsArray.push(animal);
     fs.writeFileSync(
@@ -83,7 +83,7 @@ function filterByQuery(query, animalsArray) {
     return animal;
   }
 
-  function validateAnimal(animal) {
+function validateAnimal(animal) {
     if (!animal.name || typeof animal.name !== 'string') {
       return false;
     }
@@ -99,7 +99,7 @@ function filterByQuery(query, animalsArray) {
     return true;
   }
 
-  app.post('/api/animals', (req, res) => {
+app.post('/api/animals', (req, res) => {
     // set id based on what the next index of the array will be
     req.body.id = animals.length.toString();
   
@@ -112,9 +112,18 @@ function filterByQuery(query, animalsArray) {
     }
   });
 
-  app.get('/', (req, res) => {
+app.get('/', (req, res) => {
     res.sendFile(path.join(__dirname, './public/index.html'));
   });
+app.get('/animals', (req, res) => {
+    res.sendFile(path.join(__dirname, './public/animals.html'));
+  });
+app.get('/zookeepers', (req, res) => {
+    res.sendFile(path.join(__dirname, './public/zookeepers.html'));
+  });
+app.get('*', (req, res) => {
+    res.sendFile(path.join(__dirname, './public/index.html'));
+  });  
 
 app.listen(PORT, () => {
     console.log(`API server now on port ${PORT}!`);
